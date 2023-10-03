@@ -2,15 +2,18 @@
 import ActionBar from "@/components/ui/ActionBar";
 import UMTable from "@/components/ui/UMTable";
 import UMBreadCrumb from "@/components/ui/UmBreadCrumb";
-import { useDepartmentsQuery } from "@/redux/api/departmentApi";
+import {
+  useDeleteDepartmentMutation,
+  useDepartmentsQuery,
+} from "@/redux/api/departmentApi";
 import { useDebounced } from "@/redux/hooks";
 import {
   DeleteOutlined,
   EditOutlined,
-  EyeOutlined,
   ReloadOutlined,
 } from "@ant-design/icons";
-import { Button, Input } from "antd";
+import { Button, Input, message } from "antd";
+import dayjs from "dayjs";
 import Link from "next/link";
 import { useState } from "react";
 
@@ -41,6 +44,20 @@ const ManageDepartmentPage = () => {
   const { data, isLoading } = useDepartmentsQuery({ ...query });
   const departments = data?.departments;
   const meta = data?.meta;
+
+  const [deleteDepartment] = useDeleteDepartmentMutation();
+  const deleteHandler = async (id: string) => {
+    message.loading("Deleting.....");
+    try {
+      //   console.log(data);
+      await deleteDepartment(id);
+      message.success("Department delete successfully");
+    } catch (err: any) {
+      //   console.error(err.message);
+      message.error(err.message);
+    }
+  };
+
   const columns = [
     {
       title: "Title",
@@ -49,6 +66,9 @@ const ManageDepartmentPage = () => {
     {
       title: "CreatedAt",
       dataIndex: "createdAt",
+      render: function (data: any) {
+        return data && dayjs(data).format("MMM D,YYYY hh:mm A");
+      },
       sorter: true,
     },
     {
@@ -56,19 +76,22 @@ const ManageDepartmentPage = () => {
       render: function (data: any) {
         return (
           <>
-            <Button onClick={() => console.log(data)} type="primary">
-              <EyeOutlined />
-            </Button>
+            <Link href={`/super_admin/department/edit/${data?.id}`}>
+              <Button
+                style={{
+                  margin: "0px 5px",
+                }}
+                onClick={() => console.log(data)}
+                type="primary"
+              >
+                <EditOutlined />
+              </Button>
+            </Link>
             <Button
-              style={{
-                margin: "0px 5px",
-              }}
-              onClick={() => console.log(data)}
+              onClick={() => deleteHandler(data?.id)}
               type="primary"
+              danger
             >
-              <EditOutlined />
-            </Button>
-            <Button onClick={() => console.log(data)} type="primary" danger>
               <DeleteOutlined />
             </Button>
           </>

@@ -2,7 +2,8 @@ import { LoadingOutlined, PlusOutlined } from "@ant-design/icons";
 import { Upload, message } from "antd";
 import type { UploadChangeParam } from "antd/es/upload";
 import type { RcFile, UploadFile, UploadProps } from "antd/es/upload/interface";
-import React, { useState } from "react";
+import { useState } from "react";
+import { useFormContext } from "react-hook-form";
 
 const getBase64 = (img: RcFile, callback: (url: string) => void) => {
   const reader = new FileReader();
@@ -22,9 +23,14 @@ const beforeUpload = (file: RcFile) => {
   return isJpgOrPng && isLt2M;
 };
 
-const UploadImage: React.FC = () => {
+type ImageUploadProps = {
+  name: string;
+};
+
+const UploadImage = ({ name }: ImageUploadProps) => {
   const [loading, setLoading] = useState(false);
   const [imageUrl, setImageUrl] = useState<string>();
+  const { setValue } = useFormContext();
 
   const handleChange: UploadProps["onChange"] = (
     info: UploadChangeParam<UploadFile>
@@ -35,6 +41,7 @@ const UploadImage: React.FC = () => {
     }
     if (info.file.status === "done") {
       // Get this url from response in real world.
+      setValue(name, info.file.originFileObj);
       getBase64(info.file.originFileObj as RcFile, (url) => {
         setLoading(false);
         setImageUrl(url);

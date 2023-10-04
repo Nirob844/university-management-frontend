@@ -6,20 +6,46 @@ import FormSelectField from "@/components/Forms/FormSelectField";
 import FormTextArea from "@/components/Forms/FormTextArea";
 import UmBreadCrumb from "@/components/ui/UmBreadCrumb";
 import UploadImage from "@/components/ui/uploadImage";
-import {
-  bloodGroupOptions,
-  departOption,
-  genderOption,
-} from "@/constants/global";
+import { bloodGroupOptions, genderOption } from "@/constants/global";
+import { useAddAdminWithFormDataMutation } from "@/redux/api/adminApi";
+import { useDepartmentsQuery } from "@/redux/api/departmentApi";
 import { adminSchema } from "@/schemas/admin";
+import { IDepartment } from "@/types";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { Button, Col, Row } from "antd";
+import { Button, Col, Row, message } from "antd";
 
 const CreateAdminPage = () => {
-  const onSubmit = async (data: any) => {
+  const { data, isLoading } = useDepartmentsQuery({ limit: 100, page: 1 });
+  const [addAdminWithFormData] = useAddAdminWithFormDataMutation();
+  //@ts-ignore
+  const departments: IDepartment[] = data?.departments;
+
+  const departmentOptions =
+    departments &&
+    departments?.map((department) => {
+      return {
+        label: department?.title,
+        value: department?.id,
+      };
+    });
+
+  const onSubmit = async (values: any) => {
+    const obj = { ...values };
+    const file = obj["file"];
+    delete obj["file"];
+    const data = JSON.stringify(obj);
+    const formData = new FormData();
+    formData.append("file", file as Blob);
+    formData.append("data", data);
+    message.loading("creating ................");
     try {
-      console.log(data);
-    } catch (error) {}
+      await addAdminWithFormData(formData);
+      message.success("admin added successfully");
+      console.log(values);
+    } catch (err: any) {
+      console.error(err.message);
+      message.error(err.message);
+    }
   };
   return (
     <div>
@@ -134,7 +160,7 @@ const CreateAdminPage = () => {
                 }}
               >
                 <FormSelectField
-                  options={departOption}
+                  options={departmentOptions}
                   size="large"
                   name="admin.managementDepartment"
                   label="Department"
@@ -148,7 +174,7 @@ const CreateAdminPage = () => {
                   marginBottom: "10px",
                 }}
               >
-                <UploadImage />
+                <UploadImage name="file" />
               </Col>
             </Row>
           </div>

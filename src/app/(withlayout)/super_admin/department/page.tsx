@@ -100,24 +100,6 @@ const ManageDepartmentPage = () => {
     },
   ];
 
-  // const tableData = [
-  //   {
-  //     key: "1",
-  //     name: "John White",
-  //     age: 32,
-  //   },
-  //   {
-  //     key: "2",
-  //     name: "Jim Green",
-  //     age: 42,
-  //   },
-  //   {
-  //     key: "3",
-  //     name: "Joe Black",
-  //     age: 32,
-  //   },
-  // ];
-
   const onPaginationChange = (page: number, pageSize: number) => {
     // console.log(page, pageSize);
     setPage(page);

@@ -5,7 +5,7 @@ import FormDatePicker from "@/components/Forms/FormDatePicker";
 import FormInput from "@/components/Forms/FormInput";
 import FormSelectField from "@/components/Forms/FormSelectField";
 import FormTextArea from "@/components/Forms/FormTextArea";
-import UmBreadCrumb from "@/components/ui/UmBreadCrumb";
+import UmBreadCrumb from "@/components/ui/UMBreadCrumb";
 import UploadImage from "@/components/ui/uploadImage";
 import { bloodGroupOptions, genderOption } from "@/constants/global";
 import { getUserInfo } from "@/services/auth.service";

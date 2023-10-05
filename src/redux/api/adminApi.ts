@@ -1,5 +1,5 @@
 import { IAdmin, IMeta } from "@/types";
-import { tagTypes } from "../teg-types";
+import { tagTypes } from "../tag-types";
 import { baseApi } from "./baseApi";
 
 const ADMIN_URL = "/admins";

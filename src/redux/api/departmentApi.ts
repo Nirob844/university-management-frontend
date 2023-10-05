@@ -1,5 +1,5 @@
 import { IDepartment, IMeta } from "@/types";
-import { tagTypes } from "../teg-types";
+import { tagTypes } from "../tag-types";
 import { baseApi } from "./baseApi";
 
 const DEPARTMENT_URL = "/management-departments";

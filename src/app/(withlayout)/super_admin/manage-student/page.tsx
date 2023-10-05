@@ -1,5 +1,5 @@
 "use client";
-import UmBreadCrumb from "@/components/ui/UmBreadCrumb";
+import UmBreadCrumb from "@/components/ui/UMBreadCrumb";
 import { getUserInfo } from "@/services/auth.service";
 import { Button } from "antd";
 import Link from "next/link";

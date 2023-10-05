@@ -32,7 +32,7 @@ const CreateCoursePage = () => {
       }
     );
 
-    data.coursePreRequisites = coursePreRequisitesOptions;
+    data.preRequisiteCourses = coursePreRequisitesOptions;
 
     message.loading("Creating.....");
     try {
@@ -70,7 +70,7 @@ const CreateCoursePage = () => {
             <div style={{ margin: "10px 0px" }}>
               <FormMultiSelectField
                 options={coursesOptions as SelectOption[]}
-                name="coursePreRequisites"
+                name="preRequisiteCourses"
                 label="Pre Requisite Courses"
               />
             </div>

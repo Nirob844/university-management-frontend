@@ -2,20 +2,22 @@
 import ActionBar from "@/components/ui/ActionBar";
 import UMBreadCrumb from "@/components/ui/UMBreadCrumb";
 import UMTable from "@/components/ui/UMTable";
-import { useStudentsQuery } from "@/redux/api/studentApi";
+import {
+  useBuildingsQuery,
+  useDeleteBuildingMutation,
+} from "@/redux/api/buildingApi";
 import { useDebounced } from "@/redux/hooks";
 import {
   DeleteOutlined,
   EditOutlined,
-  EyeOutlined,
   ReloadOutlined,
 } from "@ant-design/icons";
-import { Button, Input } from "antd";
+import { Button, Input, message } from "antd";
 import dayjs from "dayjs";
 import Link from "next/link";
 import { useState } from "react";
 
-const StudentPage = () => {
+const ManageBuildingPage = () => {
   const query: Record<string, any> = {};
 
   const [page, setPage] = useState<number>(1);
@@ -23,45 +25,46 @@ const StudentPage = () => {
   const [sortBy, setSortBy] = useState<string>("");
   const [sortOrder, setSortOrder] = useState<string>("");
   const [searchTerm, setSearchTerm] = useState<string>("");
+  const [deleteBuilding] = useDeleteBuildingMutation();
 
   query["limit"] = size;
   query["page"] = page;
   query["sortBy"] = sortBy;
   query["sortOrder"] = sortOrder;
+  // query["searchTerm"] = searchTerm;
 
-  const debouncedSearchTerm = useDebounced({
+  const debouncedTerm = useDebounced({
     searchQuery: searchTerm,
     delay: 600,
   });
 
-  if (!!debouncedSearchTerm) {
-    query["searchTerm"] = debouncedSearchTerm;
+  if (!!debouncedTerm) {
+    query["searchTerm"] = debouncedTerm;
   }
-  const { data, isLoading } = useStudentsQuery({ ...query });
+  const { data, isLoading } = useBuildingsQuery({ ...query });
 
-  const students = data?.students;
+  const buildings = data?.buildings;
   const meta = data?.meta;
-  // console.log(students);
+
+  const deleteHandler = async (id: string) => {
+    message.loading("Deleting.....");
+    try {
+      //   console.log(data);
+      await deleteBuilding(id);
+      message.success("Building Deleted successfully");
+    } catch (err: any) {
+      //   console.error(err.message);
+      message.error(err.message);
+    }
+  };
 
   const columns = [
     {
-      title: "Id",
-      dataIndex: "studentId",
-      sorter: true,
+      title: "Title",
+      dataIndex: "title",
     },
     {
-      title: "Name",
-      render: function (data: Record<string, string>) {
-        const fullName = `${data?.firstName} ${data?.middleName} ${data?.lastName}`;
-        return <>{fullName}</>;
-      },
-    },
-    {
-      title: "Email",
-      dataIndex: "email",
-    },
-    {
-      title: "Created at",
+      title: "CreatedAt",
       dataIndex: "createdAt",
       render: function (data: any) {
         return data && dayjs(data).format("MMM D, YYYY hh:mm A");
@@ -69,26 +72,11 @@ const StudentPage = () => {
       sorter: true,
     },
     {
-      title: "Contact no.",
-      dataIndex: "contactNo",
-    },
-    {
-      title: "Gender",
-      dataIndex: "gender",
-      sorter: true,
-    },
-    {
       title: "Action",
-      dataIndex: "id",
       render: function (data: any) {
         return (
           <>
-            <Link href={`/admin/manage-faculty/details/${data.id}`}>
-              <Button onClick={() => console.log(data)} type="primary">
-                <EyeOutlined />
-              </Button>
-            </Link>
-            <Link href={`/admin/manage-faculty/edit/${data.id}`}>
+            <Link href={`/admin/building/edit/${data?.id}`}>
               <Button
                 style={{
                   margin: "0px 5px",
@@ -99,7 +87,11 @@ const StudentPage = () => {
                 <EditOutlined />
               </Button>
             </Link>
-            <Button onClick={() => console.log(data)} type="primary" danger>
+            <Button
+              onClick={() => deleteHandler(data?.id)}
+              type="primary"
+              danger
+            >
               <DeleteOutlined />
             </Button>
           </>
@@ -107,6 +99,7 @@ const StudentPage = () => {
       },
     },
   ];
+
   const onPaginationChange = (page: number, pageSize: number) => {
     console.log("Page:", page, "PageSize:", pageSize);
     setPage(page);
@@ -124,6 +117,7 @@ const StudentPage = () => {
     setSortOrder("");
     setSearchTerm("");
   };
+
   return (
     <div>
       <UMBreadCrumb
@@ -134,24 +128,28 @@ const StudentPage = () => {
           },
         ]}
       />
-      <ActionBar title="Student List">
+
+      <ActionBar title="Building List">
         <Input
+          type="text"
           size="large"
-          placeholder="Search"
-          onChange={(e) => setSearchTerm(e.target.value)}
+          placeholder="Search..."
           style={{
             width: "20%",
           }}
+          onChange={(e) => {
+            setSearchTerm(e.target.value);
+          }}
         />
         <div>
-          <Link href="/admin/manage-student/create">
+          <Link href="/admin/building/create">
             <Button type="primary">Create</Button>
           </Link>
           {(!!sortBy || !!sortOrder || !!searchTerm) && (
             <Button
-              style={{ margin: "0px 5px" }}
-              type="primary"
               onClick={resetFilters}
+              type="primary"
+              style={{ margin: "0px 5px" }}
             >
               <ReloadOutlined />
             </Button>
@@ -162,7 +160,7 @@ const StudentPage = () => {
       <UMTable
         loading={isLoading}
         columns={columns}
-        dataSource={students}
+        dataSource={buildings}
         pageSize={size}
         totalPages={meta?.total}
         showSizeChanger={true}
@@ -174,4 +172,4 @@ const StudentPage = () => {
   );
 };
 
-export default StudentPage;
+export default ManageBuildingPage;

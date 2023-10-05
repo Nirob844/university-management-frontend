@@ -2,7 +2,7 @@
 import Form from "@/components/Forms/Form";
 import FormInput from "@/components/Forms/FormInput";
 import ActionBar from "@/components/ui/ActionBar";
-import UmBreadCrumb from "@/components/ui/UmBreadCrumb";
+import UmBreadCrumb from "@/components/ui/UMBreadCrumb";
 import {
   useDepartmentQuery,
   useUpdateDepartmentMutation,

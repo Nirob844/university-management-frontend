@@ -1,7 +1,7 @@
 "use client";
 import ActionBar from "@/components/ui/ActionBar";
+import UMBreadCrumb from "@/components/ui/UMBreadCrumb";
 import UMTable from "@/components/ui/UMTable";
-import UMBreadCrumb from "@/components/ui/UmBreadCrumb";
 import {
   useDeleteDepartmentMutation,
   useDepartmentsQuery,

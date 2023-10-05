@@ -3,17 +3,19 @@
 import Form from "@/components/Forms/Form";
 import FormInput from "@/components/Forms/FormInput";
 import UmBreadCrumb from "@/components/ui/UMBreadCrumb";
-import { useAddDepartmentMutation } from "@/redux/api/departmentApi";
+import { useAddAcademicFacultyMutation } from "@/redux/api/academic/facultyApi";
 import { getUserInfo } from "@/services/auth.service";
 import { Button, Col, Row, message } from "antd";
 
-const CreateDepartmentPage = () => {
-  const [addDepartment] = useAddDepartmentMutation();
+const CreateAcFacultyPage = () => {
+  const [addAcademicFaculty] = useAddAcademicFacultyMutation();
   const onSubmit = async (data: any) => {
     message.loading("creating ................");
     try {
-      await addDepartment(data);
-      message.success("department added successfully");
+      const res = addAcademicFaculty(data);
+      if (!!res) {
+        message.success("academic faculty added successfully");
+      }
     } catch (err: any) {
       console.error(err.message);
       message.error(err.message);
@@ -25,10 +27,10 @@ const CreateDepartmentPage = () => {
       <UmBreadCrumb
         items={[
           { label: `${role}`, link: `/${role}` },
-          { label: "department", link: `/${role}/department` },
+          { label: "academic/faculty", link: `/${role}/academic/faculty` },
         ]}
       />
-      <h1>Create Department</h1>
+      <h1>Create Academic Faculty</h1>
       <Form submitHandler={onSubmit}>
         <Row gutter={{ xs: 24, xl: 8, lg: 8, md: 24 }}>
           <Col span={8} style={{ margin: "10px 0" }}>
@@ -43,4 +45,4 @@ const CreateDepartmentPage = () => {
   );
 };
 
-export default CreateDepartmentPage;
+export default CreateAcFacultyPage;

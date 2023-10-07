@@ -14,6 +14,7 @@ type SelectFieldProps = {
   placeholder?: string;
   label?: string;
   defaultValue?: SelectOption;
+  handleChange?: (el: string) => void;
 };
 
 const FormSelectField = ({
@@ -24,6 +25,7 @@ const FormSelectField = ({
   placeholder,
   label,
   defaultValue,
+  handleChange,
 }: SelectFieldProps) => {
   const { control } = useFormContext();
 
@@ -36,7 +38,7 @@ const FormSelectField = ({
         render={({ field: { value, onChange } }) => (
           <Select
             style={{ width: "100%" }}
-            onChange={onChange}
+            onChange={handleChange ? handleChange : onChange}
             options={options}
             value={value}
             size={size}

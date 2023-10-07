@@ -4,14 +4,14 @@ import FormSelectField, { SelectOption } from "./FormSelectField";
 type ACDepartmentFieldProps = {
   name: string;
   label?: string;
-  //onChange: (e: any) => void;
+  onChange: (e: any) => void;
 };
 
 const ACDepartmentField = ({
   name,
   label,
-}: // onChange,
-ACDepartmentFieldProps) => {
+  onChange,
+}: ACDepartmentFieldProps) => {
   const { data, isLoading } = useAcademicDepartmentsQuery({
     limit: 100,
     page: 1,
@@ -29,7 +29,7 @@ ACDepartmentFieldProps) => {
       name={name}
       label={label}
       options={acDepartmentOptions as SelectOption[]}
-      //  handleChange={(e) => onChange(e)}
+      handleChange={(e) => onChange(e)}
     />
   );
 };

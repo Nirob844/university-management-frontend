@@ -26,6 +26,7 @@ const SemesterRegistrationPage = () => {
   const [sortBy, setSortBy] = useState<string>("");
   const [sortOrder, setSortOrder] = useState<string>("");
   const [searchTerm, setSearchTerm] = useState<string>("");
+
   const [deleteSemesterRegistrations] =
     useDeleteSemesterRegistrationsMutation();
 

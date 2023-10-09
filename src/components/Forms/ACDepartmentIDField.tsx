@@ -1,18 +1,24 @@
 import { useAcademicDepartmentsQuery } from "@/redux/api/academic/departmentApi";
 import FormSelectField, { SelectOption } from "./FormSelectField";
 
-type ACDepartmentFieldProps = {
+type ACDepartmentIDFieldProps = {
   name: string;
   label?: string;
+  onChange: (e: any) => void;
 };
 
-const ACDepartmentField = ({ name, label }: ACDepartmentFieldProps) => {
+const ACDepartmentIDField = ({
+  name,
+  label,
+  onChange,
+}: ACDepartmentIDFieldProps) => {
   const { data, isLoading } = useAcademicDepartmentsQuery({
     limit: 100,
     page: 1,
   });
   const academicDepartments = data?.academicDepartments;
-  const acDepartmentOptions = academicDepartments?.map((acDepartment) => {
+  const acDepartmentOptions = academicDepartments?.map((acDepartment: any) => {
+    console.log(acDepartment?.id);
     return {
       label: acDepartment?.title,
       value: acDepartment?.id,
@@ -24,8 +30,9 @@ const ACDepartmentField = ({ name, label }: ACDepartmentFieldProps) => {
       name={name}
       label={label}
       options={acDepartmentOptions as SelectOption[]}
+      handleChange={(e) => onChange(e)}
     />
   );
 };
 
-export default ACDepartmentField;
+export default ACDepartmentIDField;

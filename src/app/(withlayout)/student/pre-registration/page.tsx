@@ -1,5 +1,6 @@
 "use client";
 
+import Loading from "@/app/loading";
 import ActionBar from "@/components/ui/ActionBar";
 import UMBreadCrumb from "@/components/ui/UMBreadCrumb";
 import UMCollapse, { ItemProps } from "@/components/ui/UMCollapse";
@@ -10,19 +11,23 @@ import {
   useWithdrawFromCourseMutation,
 } from "@/redux/api/semesterRegistrationApi";
 import { Button, message } from "antd";
+import { useRouter } from "next/navigation";
 
 const ViewPreregistrationPage = () => {
+  const router = useRouter();
   const { data, isLoading } = useMySemesterRegistrationCoursesQuery({});
   const [enrollIntoCourse] = useEnrollIntoCourseMutation();
   const [withdrawFromCourse] = useWithdrawFromCourseMutation();
   const [confirmMyRegistration] = useConfirmMyRegistrationMutation();
-  console.log(data, "offeredCourseSections");
-
+  if (isLoading) {
+    return <Loading />;
+  }
   const handleEnroll = async ({
     offeredCourseId,
     offeredCourseSectionId,
   }: any) => {
     try {
+      message.loading("enrolling...");
       await enrollIntoCourse({
         offeredCourseId,
         offeredCourseSectionId,
@@ -37,6 +42,7 @@ const ViewPreregistrationPage = () => {
     offeredCourseSectionId,
   }: any) => {
     try {
+      message.loading("withdrawing...");
       await withdrawFromCourse({
         offeredCourseId,
         offeredCourseSectionId,
@@ -48,9 +54,11 @@ const ViewPreregistrationPage = () => {
 
   const handleConfirmRegistration = async () => {
     try {
+      message.loading("confirm registration...");
       const res = await confirmMyRegistration({}).unwrap();
       if (res) {
         message.success("Successfully registered");
+        router.push("/courses");
       }
     } catch (err: any) {
       message.error(err?.message);

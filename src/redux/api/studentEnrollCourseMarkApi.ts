@@ -64,9 +64,9 @@ const studentEnrollCourseMarkApi = baseApi.injectEndpoints({
 });
 
 export const {
-  useUpdateMarksMutation,
   useMyMarksQuery,
   useStudentEnrolledCourseMarksQuery,
+  useUpdateMarksMutation,
   useUpdateFinalMarksMutation,
 } = studentEnrollCourseMarkApi;
 

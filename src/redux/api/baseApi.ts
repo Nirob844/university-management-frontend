@@ -1,6 +1,6 @@
 import { getBaseUrl } from "@/helpers/config/envConfig";
 import { createApi } from "@reduxjs/toolkit/query/react";
-import { axiosBaseQuery } from "../../helpers/axois/axiosBaseQuery";
+import { axiosBaseQuery } from "../../helpers/axios/axiosBaseQuery";
 import { tagTypesList } from "../tag-types";
 
 // Define a service using a base URL and expected endpoints

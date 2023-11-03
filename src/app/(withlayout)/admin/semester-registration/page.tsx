@@ -54,9 +54,13 @@ const SemesterRegistrationPage = () => {
   // console.log(semesterRegistrations);
 
   const handleStartSemester = async (id: string) => {
+    console.log(id);
     try {
+      message.loading("semester starting...");
       const res = await startNewSemester(id).unwrap();
-      message.success(res);
+      if (res.id) {
+        message.success("semester start successfully");
+      }
     } catch (err: any) {
       message.error(err?.message);
     }

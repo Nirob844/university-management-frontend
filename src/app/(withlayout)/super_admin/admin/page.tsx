@@ -1,6 +1,7 @@
 "use client";
 import ActionBar from "@/components/ui/ActionBar";
-import UmBreadCrumb from "@/components/ui/UMBreadCrumb";
+import UMBreadCrumb from "@/components/ui/UMBreadCrumb";
+import UMModal from "@/components/ui/UMModal";
 import UMTable from "@/components/ui/UMTable";
 import { useAdminsQuery, useDeleteAdminMutation } from "@/redux/api/adminApi";
 import { useDebounced } from "@/redux/hooks";
@@ -18,12 +19,15 @@ import { useState } from "react";
 
 const AdminPage = () => {
   const query: Record<string, any> = {};
+  const [deleteAdmin] = useDeleteAdminMutation();
 
   const [page, setPage] = useState<number>(1);
   const [size, setSize] = useState<number>(10);
   const [sortBy, setSortBy] = useState<string>("");
   const [sortOrder, setSortOrder] = useState<string>("");
   const [searchTerm, setSearchTerm] = useState<string>("");
+  const [open, setOpen] = useState<boolean>(false);
+  const [adminId, setAdminId] = useState<string>("");
 
   query["limit"] = size;
   query["page"] = page;
@@ -42,18 +46,6 @@ const AdminPage = () => {
 
   const admins = data?.admins;
   const meta = data?.meta;
-
-  const [deleteAdmin] = useDeleteAdminMutation();
-  const deleteHandler = async (id: string) => {
-    message.loading("Deleting.....");
-    try {
-      await deleteAdmin(id);
-      message.success("Admin delete successfully");
-    } catch (err: any) {
-      //   console.error(err.message);
-      message.error(err.message);
-    }
-  };
 
   const columns = [
     {
@@ -100,14 +92,15 @@ const AdminPage = () => {
       title: "Action",
       dataIndex: "id",
       render: function (data: any) {
+        // console.log(data);
         return (
           <>
-            <Link href={`/super_admin/admin/details/${data.id}`}>
+            <Link href={`/super_admin/admin/details/${data}`}>
               <Button onClick={() => console.log(data)} type="primary">
                 <EyeOutlined />
               </Button>
             </Link>
-            <Link href={`/super_admin/admin/edit/${data.id}`}>
+            <Link href={`/super_admin/admin/edit/${data}`}>
               <Button
                 style={{
                   margin: "0px 5px",
@@ -118,7 +111,15 @@ const AdminPage = () => {
                 <EditOutlined />
               </Button>
             </Link>
-            <Button onClick={() => deleteHandler(data)} type="primary" danger>
+            <Button
+              type="primary"
+              onClick={() => {
+                setOpen(true);
+                setAdminId(data);
+              }}
+              danger
+              style={{ marginLeft: "3px" }}
+            >
               <DeleteOutlined />
             </Button>
           </>
@@ -143,9 +144,23 @@ const AdminPage = () => {
     setSortOrder("");
     setSearchTerm("");
   };
+
+  const deleteAdminHandler = async (id: string) => {
+    // console.log(id);
+    try {
+      const res = await deleteAdmin(id);
+      if (res) {
+        message.success("Admin Successfully Deleted!");
+        setOpen(false);
+      }
+    } catch (error: any) {
+      message.error(error.message);
+    }
+  };
+
   return (
     <div>
-      <UmBreadCrumb
+      <UMBreadCrumb
         items={[
           {
             label: "super_admin",
@@ -189,6 +204,15 @@ const AdminPage = () => {
         onTableChange={onTableChange}
         showPagination={true}
       />
+
+      <UMModal
+        title="Remove admin"
+        isOpen={open}
+        closeModal={() => setOpen(false)}
+        handleOk={() => deleteAdminHandler(adminId)}
+      >
+        <p className="my-5">Do you want to remove this admin?</p>
+      </UMModal>
     </div>
   );
 };

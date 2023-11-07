@@ -7,6 +7,7 @@ import { storeUserInfo } from "@/services/auth.service";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { Button, Col, Row, message } from "antd";
 import Image from "next/image";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { SubmitHandler } from "react-hook-form";
 import loginImage from "../../assets/login-image.png";
@@ -71,6 +72,17 @@ const LoginPage = () => {
                 label="User Password"
                 required
               />
+            </div>
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                margin: "5px 0px",
+              }}
+            >
+              <div style={{ marginLeft: "auto" }}>
+                <Link href="/forgot-password">forgot password?</Link>
+              </div>
             </div>
             <Button type="primary" htmlType="submit">
               Login
